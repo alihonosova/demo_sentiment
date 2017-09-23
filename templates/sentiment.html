@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Sentiment Analysis Demo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+<style TYPE="text/css">
+thead th {
+    background-color: #006DCC;
+    color: white;
+}
+</style>
+
+    <script>
+
+$(document).ready(function() {
+  $('#tab_logic').hide();
+
+  var entityMap = {
+    '&': '&amp;','<': '&lt;','>': '&gt;','"': '&quot;',"'": '&#39;','/': '&#x2F;','`': '&#x60;','=': '&#x3D;'
+  };
+
+  var esc = function (string) {
+    return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+      return entityMap[s];
+    });
+  };
+
+  var pred = function() { 
+    var req = $("#text").val();
+    $.ajax({url: "/predict?text=" + encodeURIComponent(req), success: function(result) {
+      var res = result.split(",")
+      $("#tab_logic").val("")
+      var tr = $("#tab_logic").append("<tr><th>" + esc(res[0]) + "</th><th>" + esc(res[1]) + "</th></tr>")
+      tr.show()      
+    }});
+  };
+
+  $("#text").keypress(function(e) {
+    if(e.which == 0) {
+      pred();
+      $("#tab_logic").val('');
+      $("#tab_logic").hide()
+    }
+  });
+
+  $("#predict").click(pred);
+  $("#text").focus();
+  
+});
+
+    </script>
+  </head>
+  <body>
+
+    <div class="container">
+      <h1 class="text-center">Sentiment Analysis Demo</h1>
+      <div class="row clearfix">
+        <div class="col-md-12 column">
+        
+        <textarea style="resize:none" class="form-control" input id="text" rows="10">
+        </textarea>
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button id="predict" class="btn btn-default" type="button">Predict!</button>
+            </span>
+        </div> 
+
+        <table class='table borderless' id="tab_logic">
+        <tr>
+        <th class="text-center.col-xs-1">
+          Class
+        </th>
+        <th class="text-center.col-xs-1">
+          Probability
+        </th>
+        </tr>
+        </table>
+	    </div>
+      </div>
+  
+    </div>
+
+  </body>
+</html>

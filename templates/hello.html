@@ -1,0 +1,16 @@
+<!doctype html>
+<title>Sentiment Demo</title>
+<form action="{{ url_for('index_page') }}" method=post>
+    <dl>
+        <dt>Enter text: <br>
+        <dd><textarea name=text rows=5 cols=40>{{ text }}</textarea>
+        <dd><input type=submit value="Detect sentiment">
+    </dl>
+</form>
+
+<br>Sentiment prediction:<br>
+{{ prediction_message }}
+<br>Positive:<br>
+{{positive}}
+<br>Negative:<br>
+{{negative}}
