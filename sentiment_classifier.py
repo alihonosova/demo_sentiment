@@ -21,7 +21,7 @@ class SentimentClassifier(object):
         try:
             
             return self.model.predict(text)[0],\
-                   self.model.predict_proba(text)[0].max()
+                   self.model.predict_proba(text).max()
         except:
             print("prediction error")
             return -1, 0.8
