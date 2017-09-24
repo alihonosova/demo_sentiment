@@ -3,11 +3,8 @@ from sklearn.externals import joblib
 
 class SentimentClassifier(object):
     def __init__(self):
-        self.model = joblib.load("./models/LogisticReg.pkl")
-        self.count_vect = joblib.load("./models/CountVect.pkl")
-        self.tfidf = joblib.load("./models/TFIDFTransf.pkl")
-        self.trunc = joblib.load("./models/SVDTrunc.pkl")
-        self.classes_dict = {0: "negative", 1: "positive", -1: "prediction error"}
+        self.model = joblib.load("./models/PiplineLogReg.pkl")
+        self.classes_dict = {1: "negative", 0: "positive", -1: "prediction error"}
 
     @staticmethod
     def get_probability_words(probability):
@@ -22,23 +19,17 @@ class SentimentClassifier(object):
 
     def predict_text(self, text):
         try:
-            vectorized = self.count_vect.transform([text])
-            transformed = self.tfidf.transform(vectorized)
-            truncated = self.trunc.transform(transformed)
-            return self.model.predict(truncated)[0],\
-                   self.model.predict_proba(truncated)[0].max(),\
-                   self.model.predict_proba(truncated)[0]
+            
+            return self.model.predict(text)[0],\
+                   self.model.predict_proba(text)[0].max()
         except:
             print("prediction error")
             return -1, 0.8
 
     def predict_list(self, list_of_texts):
         try:
-            vectorized = self.count_vect.transform(list_of_texts)
-            transformed = self.tfidf.transform(vectorized)
-            truncated = self.trunc.transform(transformed)
-            return self.model.predict(vectorized),\
-                   self.model.predict_proba(vectorized)
+            return self.model.predict(list_of_texts),\
+                   self.model.predict_proba(list_of_texts)
         except:
             print('prediction error')
             return None
@@ -47,7 +38,5 @@ class SentimentClassifier(object):
         prediction = self.predict_text(text)
         class_prediction = prediction[0]
         prediction_probability = prediction[1]
-        prediction_positive = prediction[2]
         return [self.get_probability_words(prediction_probability) + " " + self.classes_dict[class_prediction],
-                str(round(prediction_positive[1],2)),
-                str(round(1-prediction_positive[1],2))]
+                str(round(prediction_probability,2))]

@@ -16,9 +16,7 @@ thead th {
 </style>
 
     <script>
-
 $(document).ready(function() {
-  $('#tab_logic').hide();
 
   var entityMap = {
     '&': '&amp;','<': '&lt;','>': '&gt;','"': '&quot;',"'": '&#39;','/': '&#x2F;','`': '&#x60;','=': '&#x3D;'
@@ -30,21 +28,18 @@ $(document).ready(function() {
     });
   };
 
-  var pred = function() { 
+  var pred = function() {
     var req = $("#text").val();
     $.ajax({url: "/predict?text=" + encodeURIComponent(req), success: function(result) {
-      var res = result.split(",")
-      $("#tab_logic").val("")
-      var tr = $("#tab_logic").append("<tr><th>" + esc(res[0]) + "</th><th>" + esc(res[1]) + "</th></tr>")
-      tr.show()      
+      var res = result.split(',');
+      var tr = $("#tab_logic").html("<tr><th>" + esc(res[0]) + "\t\t\t" + esc(res[1]) + "</th></tr>")
+      tr.show()
     }});
   };
 
   $("#text").keypress(function(e) {
     if(e.which == 0) {
       pred();
-      $("#tab_logic").val('');
-      $("#tab_logic").hide()
     }
   });
 
@@ -55,13 +50,16 @@ $(document).ready(function() {
 
     </script>
   </head>
+
+
   <body>
 
     <div class="container">
       <h1 class="text-center">Sentiment Analysis Demo</h1>
       <div class="row clearfix">
         <div class="col-md-12 column">
-        
+
+        <h4><span class="label label-primary">Paragraph</span></h4>
         <textarea style="resize:none" class="form-control" input id="text" rows="10">
         </textarea>
         <div class="input-group">
@@ -69,18 +67,16 @@ $(document).ready(function() {
                 <button id="predict" class="btn btn-default" type="button">Predict!</button>
             </span>
         </div> 
-
+       
+ 
+        <h4><span class="label label-primary">Sentiment</span></h4>
         <table class='table borderless' id="tab_logic">
         <tr>
-        <th class="text-center.col-xs-1">
-          Class
-        </th>
-        <th class="text-center.col-xs-1">
-          Probability
-        </th>
+            <th class="text-center.col-xs-1"></th>
         </tr>
         </table>
-	    </div>
+
+        </div>
       </div>
   
     </div>
