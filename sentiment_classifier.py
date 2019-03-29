@@ -1,4 +1,3 @@
-__author__ = 'xead'
 from sklearn.externals import joblib
 
 class SentimentClassifier(object):
